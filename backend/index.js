@@ -25,4 +25,8 @@ app.use("/api/auth", router);
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
 
+app.get("/", (req, res)=> {
+  res.send("server started")
+})
+
 server.listen(Port, () => console.log("server running on Port", Port));

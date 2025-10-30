@@ -7,6 +7,7 @@ import { setUserData } from "../redux/userSlice";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import dp from "../assets/dp.jpg";
+import { useEffect } from "react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -47,6 +48,10 @@ const Profile = () => {
       setLoader(false);
     }
   };
+
+  useEffect(()=> {
+    handleProfile()
+  }, [name, frontendImage])
   return (
     <div className="h-screen flex flex-col items-center justify-center gap-10">
       <div className="bg-[#1A1D24] rounded-box p-10 shadow-lg shadow-zinc-500 flex flex-col items-center justify-center w-[90%] md:w-lg">

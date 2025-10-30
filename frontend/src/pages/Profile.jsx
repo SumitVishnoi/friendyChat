@@ -49,9 +49,6 @@ const Profile = () => {
     }
   };
 
-  useEffect(()=> {
-    handleProfile()
-  }, [name, frontendImage])
   return (
     <div className="h-screen flex flex-col items-center justify-center gap-10">
       <div className="bg-[#1A1D24] rounded-box p-10 shadow-lg shadow-zinc-500 flex flex-col items-center justify-center w-[90%] md:w-lg">
@@ -111,7 +108,6 @@ const Profile = () => {
 
           <button
             className="btn btn-neutral hover:bg-zinc-900 mt-4 w-full"
-            onClick={() => navigate("/")}
           >
             {loader ? (
               <span className="loading loading-spinner loading-xs"></span>

@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { serverUrl } from "./main";
 import { setOnlineUser, setSocket } from "./redux/userSlice";
+import Error from "./pages/Error";
 
 function App() {
   getUser();
@@ -56,6 +57,10 @@ function App() {
         <Route
           path="/profile"
           element={userData ? <Profile /> : <Navigate to={"/signup"} />}
+        />
+        <Route
+          path="*"
+          element={<Error />}
         />
       </Routes>
     </div>

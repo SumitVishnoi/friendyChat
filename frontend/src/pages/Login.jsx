@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { serverUrl } from "../main";
 import { useDispatch } from "react-redux";
 import { setSelectedUser, setUserData } from "../redux/userSlice";
-import { setMessageData } from "../redux/messageSlice";
 
 const Login = () => {
   const navigate = useNavigate();

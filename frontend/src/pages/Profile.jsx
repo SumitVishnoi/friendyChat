@@ -10,6 +10,7 @@ import dp from "../assets/dp.jpg";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const [loader, setLoader] = useState(false);
   const { userData } = useSelector((state) => state.user);
   const [name, setName] = useState("");
   const [frontendImage, setFrontendImage] = useState(null);
@@ -25,6 +26,7 @@ const Profile = () => {
 
   const handleProfile = async (e) => {
     e.preventDefault();
+    setLoader(true);
     try {
       let formData = new FormData();
       formData.append("name", name);
@@ -38,9 +40,11 @@ const Profile = () => {
         { withCredentials: true }
       );
       dispatch(setUserData(response.data));
+      setLoader(false);
       navigate("/");
     } catch (error) {
       console.log(error);
+      setLoader(false);
     }
   };
   return (
@@ -54,7 +58,7 @@ const Profile = () => {
         </div>
         <div className="avatar relative">
           <div className="ring-primary ring-offset-base-400 w-24 rounded-full ring-2 ring-offset-2">
-            <img src={frontendImage || userData.image || dp}  />
+            <img src={frontendImage || userData.image || dp} />
           </div>
           <div
             className="absolute bottom-1 right-0 bg-[#605DFF] cursor-pointer rounded-full flex justify-center items-center"
@@ -100,8 +104,15 @@ const Profile = () => {
             </div>
           </div>
 
-          <button className="btn btn-neutral hover:bg-zinc-900 mt-4 w-full">
-            Save
+          <button
+            className="btn btn-neutral hover:bg-zinc-900 mt-4 w-full"
+            onClick={() => navigate("/")}
+          >
+            {loader ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              "Save"
+            )}
           </button>
         </form>
       </div>

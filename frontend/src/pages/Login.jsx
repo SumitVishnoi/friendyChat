@@ -89,7 +89,7 @@ const Login = () => {
             )}
           </button>
           <p className="text-center">
-            Create a new account?{" "}
+            Do you want to create a new account?{" "}
             <span
               className="text-[#605DFF] cursor-pointer hover:underline"
               onClick={() => navigate("/signup")}

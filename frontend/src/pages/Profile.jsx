@@ -54,7 +54,7 @@ const Profile = () => {
         </div>
         <div className="avatar relative">
           <div className="ring-primary ring-offset-base-400 w-24 rounded-full ring-2 ring-offset-2">
-            <img src={frontendImage || userData.image} />
+            <img src={frontendImage || userData.image || dp}  />
           </div>
           <div
             className="absolute bottom-1 right-0 bg-[#605DFF] cursor-pointer rounded-full flex justify-center items-center"

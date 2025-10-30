@@ -29,10 +29,13 @@ const SignUp = () => {
       );
       dispatch(setUserData(response.data));
       setLoader(false);
-      navigate("/profile");
+      setErr("")
     } catch (error) {
       console.log(error);
       setLoader(false);
+      if (error.response) {
+        setErr(error.response.data.message);
+      }
     }
   };
   return (
@@ -90,7 +93,11 @@ const SignUp = () => {
           </div>
 
           <button className="btn btn-neutral hover:bg-zinc-900 mt-4 w-full">
-            Sign Up
+            {loader ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              "Sign Up"
+            )}
           </button>
           <p className="text-center">
             Already have an account?{" "}

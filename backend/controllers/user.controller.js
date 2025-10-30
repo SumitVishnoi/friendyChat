@@ -74,7 +74,7 @@ export const search = async (req, res) => {
 
     if (!query) {
       return res.status(400).json({
-        message: "seach again",
+        message: "search again",
       });
     }
 

@@ -7,7 +7,6 @@ import { setUserData } from "../redux/userSlice";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import dp from "../assets/dp.jpg";
-import { useEffect } from "react";
 
 const Profile = () => {
   const navigate = useNavigate();

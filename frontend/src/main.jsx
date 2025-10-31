@@ -6,7 +6,8 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
 
-export const serverUrl = "https://friendy-chat.vercel.app";
+// export const serverUrl = "https://friendy-chat.vercel.app";
+export const serverUrl = "https://friendychat-scb9.onrender.com";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>

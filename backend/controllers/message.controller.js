@@ -10,16 +10,27 @@ export const sendMessage = async (req, res) => {
     let { receiver } = req.params;
     let { message } = req.body;
 
-    if (!sender || !receiver || (!message && !req.file)) {
+    let imageUrl = null;
+    let videoUrl = null;
+
+    if (!sender || !receiver || (!message && !req.files)) {
       return res
         .status(400)
         .json({ message: "Sender, receiver or message missing" });
     }
 
-    let image;
-    if (req.file) {
-      image = await uploadOnCloudinary(req.file.path);
+    //upload image
+    if (req.files?.image && req.files.image[0]) {
+      const result = await uploadOnCloudinary(req.files.image[0].buffer);
+      imageUrl = result.secure_url;
     }
+
+    //upload video
+    if (req.files?.video && req.files.video[0]) {
+      const result = await uploadOnCloudinary(req.files.video[0].buffer);
+      videoUrl = result.secure_url;
+    }
+    console.log(videoUrl);
 
     let conversation = await conversationModel.findOne({
       participant: { $all: [sender, receiver] },
@@ -29,7 +40,9 @@ export const sendMessage = async (req, res) => {
       sender,
       receiver,
       message,
-      image,
+      // image:image?.secure_url || image?.url || "",
+      image: imageUrl,
+      video: videoUrl,
     });
 
     if (!conversation) {

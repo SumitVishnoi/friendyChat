@@ -19,20 +19,24 @@ import { useEffect } from "react";
 const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loader, setLoader] = useState(false);
   const [input, setInput] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const { userData, otherUser, selectedUser, onlineUser, searchData } =
     useSelector((state) => state.user);
 
   const handleLogout = async () => {
+    setLoader(true);
     try {
       const response = await axios.get(`${serverUrl}/api/auth/logout`, {
         withCredentials: true,
       });
       dispatch(setUserData(null));
       dispatch(setOtherUser(null));
+      setLoader(false);
       navigate("/login");
     } catch (error) {
+      setLoader(false);
       console.log(error);
     }
   };
@@ -56,7 +60,7 @@ const Sidebar = () => {
   }, [input]);
   return (
     <div
-      className={`h-screen lg:w-[25%] w-full border-r-1 border-zinc-600 p-2 lg:block bg-[black] ${
+      className={`min-h-screen lg:w-[25%] w-full border-r-1 border-zinc-600 p-2 lg:block bg-[black] ${
         !selectedUser ? "block" : "hidden"
       }`}
     >
@@ -85,7 +89,11 @@ const Sidebar = () => {
             className="outline-none rounded-md cursor-pointer font-semibold btn btn-primary "
             onClick={handleLogout}
           >
-            Logout
+            {loader ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              "Logout"
+            )}
           </button>
         </div>
       </div>

@@ -16,17 +16,21 @@ import { useEffect } from "react";
 
 const MessageArea = () => {
   const dispatch = useDispatch();
+  const [loader, setLoader] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
   const { userData, selectedUser, socket } = useSelector((state) => state.user);
   const [input, setInput] = useState("");
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
+  const [frontendVideo, setFrontendVideo] = useState(null);
+  const [backendVideo, setBackendVideo] = useState(null);
   const image = useRef();
   const { messageData } = useSelector((state) => state.message);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (input.length == 0 && backendImage == null) {
+    setLoader(true);
+    if (input.length == 0 && backendImage == null && backendVideo === null) {
       return;
     }
     try {
@@ -35,24 +39,46 @@ const MessageArea = () => {
       if (backendImage) {
         formData.append("image", backendImage);
       }
+
+      if (backendVideo) {
+        formData.append("video", backendVideo);
+      }
       const response = await axios.post(
         `${serverUrl}/api/message/send/${selectedUser._id}`,
         formData,
         { withCredentials: true }
       );
       dispatch(setMessageData([...messageData, response.data]));
+      setLoader(false);
       setInput("");
       setFrontendImage(null);
       setBackendImage(null);
+      setFrontendVideo(null);
+      setBackendVideo(null);
     } catch (error) {
+      setLoader(false);
       console.log(error);
     }
   };
 
-  const handleImage = (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setBackendImage(file);
-    setFrontendImage(URL.createObjectURL(file));
+    if (!file) return;
+
+    // Detect file type (image or video)
+    if (file.type.startsWith("image")) {
+      setBackendImage(file);
+      setFrontendImage(URL.createObjectURL(file));
+      setBackendVideo(null);
+      setFrontendVideo(null);
+    } else if (file.type.startsWith("video")) {
+      setBackendVideo(file);
+      setFrontendVideo(URL.createObjectURL(file));
+      setBackendImage(null);
+      setFrontendImage(null);
+    } else {
+      alert("Please select only image or video files.");
+    }
   };
 
   const handleEmoji = (emojiData) => {
@@ -103,13 +129,18 @@ const MessageArea = () => {
             {messageData &&
               messageData.map((mess, index) =>
                 mess.sender == userData._id ? (
-                  <div key={index}>
-                    <SenderMessage image={mess.image} message={mess.message} />
+                  <div key={mess._id}>
+                    <SenderMessage
+                      image={mess.image}
+                      video={mess.video}
+                      message={mess.message}
+                    />
                   </div>
                 ) : (
                   <div key={index}>
                     <ReceiverMessage
                       image={mess.image}
+                      video={mess.video}
                       message={mess.message}
                     />
                   </div>
@@ -122,7 +153,13 @@ const MessageArea = () => {
             className="w-[100px] absolute bottom-[15%] right-[8%] rounded-md"
             alt=""
           />
-          
+
+          <video
+            key={frontendVideo || "no-video"}
+            src={frontendVideo}
+            className="w-[100px] absolute bottom-[15%] right-[8%] rounded-md"
+          ></video>
+
           <form
             onSubmit={handleSendMessage}
             className="mb-5 ml-5 w-[90%] flex items-center bg-[#FFFFFF] rounded-full overflow-hidden"
@@ -136,10 +173,11 @@ const MessageArea = () => {
             <div className="w-full h-[50px] overflow-hidden flex items-center">
               <input
                 type="file"
-                accept="image/*"
+                accept="image/*, video/*"
                 hidden
                 ref={image}
-                onChange={handleImage}
+                // onChange={handleImage}
+                onChange={handleFileChange}
               />
               <input
                 type="text"
@@ -155,9 +193,15 @@ const MessageArea = () => {
                 />
               </div>
 
-              {(input.length > 0 || backendImage != null) && (
+              {(input.length > 0 ||
+                backendImage !== null ||
+                backendVideo !== null) && (
                 <button className="text-[#605DFF] w-[50px] h-full flex justify-center items-center cursor-pointer">
-                  <IoSendSharp className="w-10 h-6" />
+                  {loader ? (
+                    <span className="loading loading-spinner loading-xs"></span>
+                  ) : (
+                    <IoSendSharp className="w-10 h-6" />
+                  )}
                 </button>
               )}
             </div>

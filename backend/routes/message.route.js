@@ -8,7 +8,10 @@ const messageRouter = express.Router();
 messageRouter.post(
   "/send/:receiver",
   isAuth,
-  upload.single("image"),
+  upload.fields([
+    { name: "image", maxCount: "1" },
+    { name: "video", maxCount: "1" },
+  ]),
   sendMessage
 );
 messageRouter.get("/get/:receiver", isAuth, getMessage);

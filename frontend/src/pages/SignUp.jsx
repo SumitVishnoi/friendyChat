@@ -29,7 +29,8 @@ const SignUp = () => {
       );
       dispatch(setUserData(response.data));
       setLoader(false);
-      setErr("")
+      navigate("/login");
+      setErr("");
     } catch (error) {
       console.log(error);
       setLoader(false);

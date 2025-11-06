@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
+import dotenv from "dotenv";
+dotenv.config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -10,7 +12,7 @@ cloudinary.config({
 const uploadOnCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: "profiles" },
+      { folder: "profiles", resource_type: "auto" },
       (error, result) => {
         if (result) resolve(result);
         else reject(error);
@@ -20,4 +22,4 @@ const uploadOnCloudinary = (fileBuffer) => {
   });
 };
 
-export default uploadOnCloudinary
+export default uploadOnCloudinary;

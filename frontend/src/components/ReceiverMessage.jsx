@@ -1,14 +1,40 @@
 import React, { useRef } from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 
-const ReceiverMessage = ({ image, message }) => {
+const ReceiverMessage = ({ image, message, video }) => {
   let scroll = useRef();
+  const videoRef = useRef();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
     scroll?.current.scrollIntoView({ behavior: "smooth" });
-  }, [message, image]);
+  }, [message, image, video]);
 
   const handleImageScroll = () => {
     scroll?.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // handle click on video
+  const handleVideoClick = () => {
+    if (!isReady) return;
+    const videoElement = videoRef.current;
+    if (isPlaying) {
+      videoElement.pause();
+    } else {
+      videoElement.play();
+    }
+    setIsPlaying(!isPlaying);
+    setIsExpanded(!isExpanded);
+  };
+
+  const handleVideoLoad = () => {
+    if (videoRef.current) {
+      setIsReady(true);
+      scroll?.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
   return (
     <div className="chat chat-start w-full h-fit">
@@ -23,6 +49,25 @@ const ReceiverMessage = ({ image, message }) => {
             alt=""
             onLoad={handleImageScroll}
           />
+        )}
+
+        {video && (
+          <video
+            ref={videoRef}
+            src={video}
+            onLoadedData={handleVideoLoad}
+            className={`rounded-lg object-cover cursor-pointer transition-all duration-300 ${
+              isExpanded ? "w-[300px] h-[300px]" : "w-[150px] h-[150px]"
+            }`}
+            onClick={() => {
+              if (!isReady) return; // video ready hone tak disable
+              handleVideoClick();
+            }}
+            onEnded={() => {
+              setIsPlaying(false);
+              setIsExpanded(false);
+            }}
+          ></video>
         )}
         {message && <p>{message}</p>}
       </div>
